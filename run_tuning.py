@@ -74,8 +74,9 @@ def verify_dependencies():
 
     try:
         from speechbrain.inference.speaker import EncoderClassifier
-    except ImportError:
-        missing.append("speechbrain")
+    except (ImportError, AttributeError, Exception) as e:
+        # speechbrain has compatibility issues with newer torchaudio
+        print(f"Warning: speechbrain unavailable ({e.__class__.__name__}), speaker embeddings will be skipped")
 
     if missing:
         print("Missing dependencies:")
