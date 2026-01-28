@@ -67,6 +67,7 @@ class QwenTTSClient:
         voice_prompt_path: str = None,
         lora_weights_path: str = None,
         use_direct_model: bool = False,
+        speaker_name: str = "her",
     ):
         """
         Initialize the TTS client.
@@ -76,11 +77,13 @@ class QwenTTSClient:
             voice_prompt_path: Path to reference audio for voice cloning
             lora_weights_path: Path to fine-tuned LoRA weights (optional)
             use_direct_model: If True, load model directly instead of using HTTP API
+            speaker_name: Speaker/voice name for TTS server (default: "her")
         """
         self.server_url = server_url or self.DEFAULT_SERVER_URL
         self.voice_prompt_path = voice_prompt_path or self.DEFAULT_VOICE_PROMPT
         self.lora_weights_path = lora_weights_path
         self.use_direct_model = use_direct_model
+        self.speaker_name = speaker_name
 
         self._model = None
         self._processor = None
@@ -174,28 +177,23 @@ class QwenTTSClient:
 
         config = config or TTSConfig()
 
-        # Prepare the request payload
-        payload = {
+        # Use /tts endpoint with query parameters (Qwen3-TTS server format)
+        params = {
             "text": text,
-            "voice_prompt": self.voice_prompt_path,
-            **config.to_dict(),
+            "speaker": self.speaker_name or "her",
         }
-
-        if self.lora_weights_path:
-            payload["lora_weights"] = self.lora_weights_path
 
         # Make the request
         response = requests.post(
-            f"{self.server_url}/generate",
-            json=payload,
+            f"{self.server_url}/tts",
+            params=params,
             timeout=120,  # TTS can take a while
         )
 
         if response.status_code != 200:
             raise RuntimeError(f"TTS generation failed: {response.text}")
 
-        # Parse the response
-        # Assume response is WAV audio bytes
+        # Parse the response - WAV audio bytes
         if sf is not None:
             audio, sample_rate = sf.read(io.BytesIO(response.content))
         else:
