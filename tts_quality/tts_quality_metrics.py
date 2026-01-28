@@ -26,9 +26,15 @@ except ImportError:
 
 try:
     import torch
-    from speechbrain.inference.speaker import EncoderClassifier
 except ImportError:
     torch = None
+
+EncoderClassifier = None
+try:
+    from speechbrain.inference.speaker import EncoderClassifier
+except (ImportError, AttributeError, Exception) as e:
+    # Handle speechbrain/torchaudio compatibility issues
+    warnings.warn(f"Speaker embeddings unavailable: {e}")
     EncoderClassifier = None
 
 
