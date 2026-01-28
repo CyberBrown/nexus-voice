@@ -177,15 +177,19 @@ class QwenTTSClient:
 
         config = config or TTSConfig()
 
-        # Use /tts endpoint with query parameters (Qwen3-TTS server format)
+        # Use /synthesize endpoint with instruct param for style control
         params = {
             "text": text,
             "speaker": self.speaker_name or "her",
         }
 
+        # Add instruction if provided
+        if config.instruction:
+            params["instruct"] = config.instruction
+
         # Make the request
         response = requests.post(
-            f"{self.server_url}/tts",
+            f"{self.server_url}/synthesize",
             params=params,
             timeout=120,  # TTS can take a while
         )
