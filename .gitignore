@@ -23,6 +23,7 @@ wheels/
 # Virtual environments
 .venv/
 venv/
+nexus-voice-venv/
 ENV/
 
 # IDE
