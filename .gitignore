@@ -23,7 +23,7 @@ wheels/
 # Virtual environments
 .venv/
 venv/
-nexus-voice-venv/
+*-venv/
 ENV/
 
 # IDE
@@ -47,3 +47,9 @@ tts_tuning_results.md
 
 # Logs
 *.log
+
+# Training data and output
+her/her_lines/
+her/her_lines_24k/
+her/output/
+her/fastpitch_samantha/
