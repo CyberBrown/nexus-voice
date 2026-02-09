@@ -1,0 +1,16 @@
+websockets
+sounddevice
+numpy
+requests
+torch
+torchaudio
+torchvision
+aiohttp
+fastapi
+uvicorn
+scipy
+librosa
+
+# For Parakeet STT (NeMo ASR)
+# Install with: pip install nemo_toolkit['asr']
+# nemo_toolkit[asr]
